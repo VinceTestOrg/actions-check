@@ -2,10 +2,16 @@ const { chromium } = require('playwright');
 
 (async () => {
   const browser = await chromium.launch();
-  const page = await browser.newPage();
+  
+  // Create a new browser context and configure video recording
+  const context = await browser.newContext({
+    recordVideo: {
+      dir: 'videos/',  // the directory to save the video
+      size: { width: 1280, height: 720 }  // optional video size
+    }
+  });
 
-  // Start video recording
-  await page.startVideo({ path: 'video.mp4' });
+  const page = await context.newPage();
 
   // Navigate to the web page
   await page.goto('https://labs.dev.vincelive.dev/signin');
@@ -16,8 +22,7 @@ const { chromium } = require('playwright');
   // Optional: Wait for a few seconds to capture the filled input in the video
   await page.waitForTimeout(5000);
 
-  // Stop video recording
-  await page.stopVideo();
-
+  await page.close();
+  await context.close();
   await browser.close();
 })();
