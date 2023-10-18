@@ -20,9 +20,20 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-      
+
+      # Install Playwright browsers
       - name: Install Playwright Browsers
         run: npx playwright install
-        
+
+      - name: Create videos directory
+        run: mkdir videos
+
       - name: Run Playwright script
         run: npm test
+
+      # Upload the recorded video as an artifact
+      - name: Upload videos
+        uses: actions/upload-artifact@v2
+        with:
+          name: recorded-videos
+          path: videos/
